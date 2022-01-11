@@ -1,6 +1,7 @@
 .canvas {
 	width: 90vw;
 	min-height: 60vh;
-	background-color: white;
+	background-color: rgba(220, 220, 255, 0.9);
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+	position: relative;
 }
