@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { sample } from "./sample";
+import { ui } from "./ui";
 
 const store = configureStore({
 	reducer: {
-		sample: sample.reducer,
+		ui: ui.reducer,
 	},
 });
 
