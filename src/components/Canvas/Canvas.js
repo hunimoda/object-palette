@@ -1,7 +1,9 @@
 import classes from "./Canvas.module.css";
 
-const Canvas = () => {
-	return <div className={classes.canvas}></div>;
+const Canvas = (props) => {
+	const canvasClass = `${classes.canvas} ${props.className}`;
+
+	return <div className={canvasClass}></div>;
 };
 
 export default Canvas;
