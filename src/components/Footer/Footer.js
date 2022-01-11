@@ -13,7 +13,6 @@ const Footer = (props) => {
 	return (
 		<footer className={footerClass}>
 			<i className="far fa-images" onClick={openInventoryHandler} />
-			<i className="fas fa-font" />
 		</footer>
 	);
 };

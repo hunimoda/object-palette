@@ -3,6 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { ui } from "../../store/ui";
 import classes from "./Inventory.module.css";
 
+const images = [
+	"https://c.tenor.com/mjpJL6EZBPEAAAAM/goodbye-homer.gif",
+	"https://i.giphy.com/media/RtdRhc7TxBxB0YAsK6/giphy.webp",
+	"https://predictivehacks.com/wp-content/uploads/2020/11/mygif-1.gif",
+	"https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/5eeea355389655.59822ff824b72.gif",
+	"https://payload.cargocollective.com/1/22/708406/14158876/ALI.gif",
+	"https://c.tenor.com/lmA7VALYIAsAAAAC/sad-pikachu.gif",
+	"https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/1abfa455389655.59822ff82373e.gif",
+	"https://c.tenor.com/U45Q8YaJzBUAAAAC/moti-hearts.gif",
+];
+
 const Inventory = () => {
 	const dispatch = useDispatch();
 	const closeInventoryHandler = () => {
@@ -29,6 +40,10 @@ const Inventory = () => {
 		}
 	};
 
+	const addImageToCanvasHandler = (event) => {
+		console.log(event.target.src);
+	};
+
 	return (
 		<Fragment>
 			{isOpen && (
@@ -39,61 +54,11 @@ const Inventory = () => {
 					<i className="fas fa-times" onClick={closeInventoryHandler} />
 				</div>
 				<div className={classes.items} onScroll={inventoryScrollHandler}>
-					<div className={classes["items-row"]}>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://c.tenor.com/mjpJL6EZBPEAAAAM/goodbye-homer.gif"
-								alt="1"
-							/>
+					{images.map((src) => (
+						<div className={classes["img-container"]} key={`container::${src}`}>
+							<img src={src} alt="invalid" onClick={addImageToCanvasHandler} />
 						</div>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://i.giphy.com/media/RtdRhc7TxBxB0YAsK6/giphy.webp"
-								alt="2"
-							/>
-						</div>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://predictivehacks.com/wp-content/uploads/2020/11/mygif-1.gif"
-								alt="3"
-							/>
-						</div>
-					</div>
-					<div className={classes["items-row"]}>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/5eeea355389655.59822ff824b72.gif"
-								alt="4"
-							/>
-						</div>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://payload.cargocollective.com/1/22/708406/14158876/ALI.gif"
-								alt="5"
-							/>
-						</div>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://c.tenor.com/lmA7VALYIAsAAAAC/sad-pikachu.gif"
-								alt="6"
-							/>
-						</div>
-					</div>
-					<div className={classes["items-row"]}>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/1abfa455389655.59822ff82373e.gif"
-								alt="7"
-							/>
-						</div>
-						<div className={classes["img-container"]}>
-							<img
-								src="https://c.tenor.com/U45Q8YaJzBUAAAAC/moti-hearts.gif"
-								alt="8"
-							/>
-						</div>
-					</div>
-					<div className={classes["items-row"]}></div>
+					))}
 				</div>
 			</div>
 		</Fragment>
