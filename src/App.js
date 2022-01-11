@@ -1,8 +1,7 @@
-import Modal from "./components/UI/Modal/Modal";
 import "./App.css";
 
 function App() {
-	return <Modal show={true}>Loading spinner</Modal>;
+	return null;
 }
 
 export default App;
