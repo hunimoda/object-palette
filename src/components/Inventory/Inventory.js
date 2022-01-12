@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ui } from "../../store/ui";
+import { canvas } from "../../store/canvas";
 import classes from "./Inventory.module.css";
 
 const images = [
@@ -41,7 +42,9 @@ const Inventory = () => {
 	};
 
 	const addImageToCanvasHandler = (event) => {
-		console.log(event.target.src);
+		const aspectRatio = event.target.naturalWidth / event.target.naturalHeight;
+
+		dispatch(canvas.actions.add({ src: event.target.src, aspectRatio }));
 	};
 
 	return (

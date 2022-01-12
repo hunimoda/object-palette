@@ -7,20 +7,31 @@ export const canvas = createSlice({
 			width: 351,
 			height: 506.391,
 		},
-		objects: [
-			{
-				src: "https://c.tenor.com/lmA7VALYIAsAAAAC/sad-pikachu.gif",
-				id: "abc123",
-				aspectRatio: 498 / 364,
-				width: 100,
-				height: 73,
-				top: 100,
-				left: 100,
-				rotate: 0,
-			},
-		],
+		objects: [],
 	},
 	reducers: {
+		add: (state, action) => {
+			const { src, aspectRatio } = action.payload;
+
+			const initWidth = 150;
+			const initHeight = initWidth / aspectRatio;
+
+			const canvasWidth = state.size.width;
+			const canvasHeight = state.size.height;
+
+			const newObject = {
+				src,
+				id: Math.random().toString() + src,
+				aspectRatio,
+				width: initWidth,
+				height: initHeight,
+				top: (canvasHeight - initHeight) / 2,
+				left: (canvasWidth - initWidth) / 2,
+				rotate: 0,
+			};
+
+			state.objects.push(newObject);
+		},
 		delete: (state, action) => {
 			const { id } = action.payload; // payload: {id: ---, }
 
