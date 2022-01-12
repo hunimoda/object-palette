@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { canvas } from "../../store/canvas";
 import classes from "./Object.module.css";
@@ -9,15 +9,9 @@ const Object = (props) => {
 	const [isBeingModified, setIsBeingModified] = useState(false);
 	const [isMoving, setIsMoving] = useState(false);
 	const [touchPoint, setTouchPoint] = useState(null);
-	const [isSelected, setIsSelected] = useState(false);
 
-	useEffect(() => {
-		document.body.addEventListener("click", (event) => {
-			setIsSelected(false);
-		});
-	}, []);
-
-	const { id, src, width, height, top, left, rotate } = props.object;
+	const { id, src, width, height, top, left, rotate, isSelected, zIndex } =
+		props.object;
 
 	const objectStyle = {
 		width: `${width}px`,
@@ -25,6 +19,7 @@ const Object = (props) => {
 		top: `${top - 1}px`, // -1 for border
 		left: `${left - 1}px`, // -1 for border
 		transform: `rotate(${-rotate}deg)`,
+		zIndex,
 	};
 	const imageStyle = {
 		width: `${width}px`,
@@ -89,7 +84,7 @@ const Object = (props) => {
 
 	const selectHandler = (event) => {
 		event.stopPropagation();
-		setIsSelected(true);
+		dispatch(canvas.actions.select({ id }));
 	};
 
 	const objectClass = `${classes.object} ${

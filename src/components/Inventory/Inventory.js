@@ -44,7 +44,9 @@ const Inventory = () => {
 	const addImageToCanvasHandler = (event) => {
 		const aspectRatio = event.target.naturalWidth / event.target.naturalHeight;
 
+		event.stopPropagation();
 		dispatch(canvas.actions.add({ src: event.target.src, aspectRatio }));
+		closeInventoryHandler();
 	};
 
 	return (
