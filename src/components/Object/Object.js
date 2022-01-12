@@ -9,6 +9,7 @@ const Object = (props) => {
 	const [isBeingModified, setIsBeingModified] = useState(false);
 	const [isMoving, setIsMoving] = useState(false);
 	const [touchPoint, setTouchPoint] = useState(null);
+	const [isRotateMode, setIsRotateMode] = useState(false);
 
 	const {
 		type,
@@ -62,6 +63,7 @@ const Object = (props) => {
 					id,
 					left: deltaLeft,
 					top: deltaTop,
+					isRotateMode,
 				})
 			);
 		}
@@ -69,6 +71,11 @@ const Object = (props) => {
 
 	const endModifyHandler = () => {
 		setIsBeingModified(false);
+	};
+
+	const toggleModifyModeHandler = (event) => {
+		event.stopPropagation();
+		setIsRotateMode((mode) => !mode);
 	};
 
 	const startMoveHandler = (event) => {
@@ -113,9 +120,12 @@ const Object = (props) => {
 				onTouchStart={startModifyHandler}
 				onTouchMove={modifyHandler}
 				onTouchEnd={endModifyHandler}
+				onClick={toggleModifyModeHandler}
 			>
 				{type === "image" ? (
 					<i className={`fas fa-arrows-alt-h ${classes.slanted}`} />
+				) : isRotateMode ? (
+					<i class="fas fa-undo" />
 				) : (
 					<i className="fas fa-arrows-alt" />
 				)}

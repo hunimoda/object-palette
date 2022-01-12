@@ -60,7 +60,12 @@ export const canvas = createSlice({
 			state.objects = state.objects.filter((object) => object.id !== id);
 		},
 		resize: (state, action) => {
-			const { id, left: touchLeft, top: touchTop } = action.payload;
+			const {
+				id,
+				left: touchLeft,
+				top: touchTop,
+				isRotateMode,
+			} = action.payload;
 
 			const currentObject = state.objects.find((object) => object.id === id);
 
@@ -71,12 +76,14 @@ export const canvas = createSlice({
 			const deltaLeft = touchLeft - currentObject.left;
 			const deltaTop = touchTop - currentObject.top;
 
-			if (currentObject.type === "image") {
+			if (currentObject.type === "image" || isRotateMode) {
 				const diagonalLength = Math.sqrt(
 					Math.pow(deltaLeft, 2) + Math.pow(deltaTop, 2)
 				);
 
-				const aspectRatio = currentObject.aspectRatio;
+				const aspectRatio = !isRotateMode
+					? currentObject.aspectRatio
+					: currentObject.width / currentObject.height;
 				const diagonalAngle = (Math.atan(1 / aspectRatio) * 180) / Math.PI;
 				const diagonalRatio = Math.sqrt(Math.pow(aspectRatio, 2) + 1);
 
