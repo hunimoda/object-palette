@@ -3,6 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 export const canvas = createSlice({
 	name: "canvas",
 	initialState: {
+		size: {
+			width: 351,
+			height: 506.391,
+		},
 		objects: [
 			{
 				src: "https://c.tenor.com/lmA7VALYIAsAAAAC/sad-pikachu.gif",
@@ -43,11 +47,13 @@ export const canvas = createSlice({
 				diagonalAngle +
 				((Math.acos(deltaLeft / diagonalLength) * 180) / Math.PI) *
 					(deltaTop > 0 ? -1 : 1);
+		},
+		move: (state, action) => {
+			const { id, deltaX, deltaY } = action.payload;
+			const object = state.objects.find((object) => object.id === id);
 
-			// console.log(newWidth);
-			// console.log(newHeight);
-			// console.log(angle);
-			// console.log("_____________________________________");
+			object.left += deltaX;
+			object.top += deltaY;
 		},
 	},
 });

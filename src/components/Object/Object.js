@@ -7,6 +7,8 @@ const Object = (props) => {
 	const dispatch = useDispatch();
 
 	const [isBeingModified, setIsBeingModified] = useState(false);
+	const [isMoving, setIsMoving] = useState(false);
+	const [touchPoint, setTouchPoint] = useState(null);
 
 	const { id, src, width, height, top, left, rotate } = props.object;
 
@@ -28,29 +30,50 @@ const Object = (props) => {
 
 	const startModifyHandler = () => {
 		setIsBeingModified(true);
-		console.log("start");
 	};
 
 	const modifyHandler = (event) => {
 		if (isBeingModified) {
-			const {
-				top: canvasTop,
-				left: canvasLeft,
-				width: canvasWidth,
-				height: canvasHeight,
-			} = props.onCanvasRequest();
+			const { top: canvasTop, left: canvasLeft } = props.onCanvasRequest();
 			const { clientX: left, clientY: top } = event.touches[0];
 
-			const deltaLeft = Math.max(0, Math.min(left - canvasLeft, canvasWidth));
-			const deltaTop = Math.max(0, Math.min(top - canvasTop, canvasHeight));
+			const deltaLeft = left - canvasLeft;
+			const deltaTop = top - canvasTop;
 
-			dispatch(canvas.actions.resize({ id, left: deltaLeft, top: deltaTop }));
+			dispatch(
+				canvas.actions.resize({
+					id,
+					left: deltaLeft,
+					top: deltaTop,
+				})
+			);
 		}
 	};
 
 	const endModifyHandler = () => {
 		setIsBeingModified(false);
-		console.log("end");
+	};
+
+	const startMoveHandler = (event) => {
+		const { clientX: x, clientY: y } = event.touches[0];
+
+		setTouchPoint({ x, y });
+		setIsMoving(true);
+	};
+
+	const moveHandler = (event) => {
+		if (isMoving) {
+			const { clientX: x, clientY: y } = event.touches[0];
+			const deltaX = x - touchPoint.x;
+			const deltaY = y - touchPoint.y;
+
+			dispatch(canvas.actions.move({ id, deltaX, deltaY }));
+			setTouchPoint({ x, y });
+		}
+	};
+
+	const endMoveHandler = () => {
+		setIsMoving(false);
 	};
 
 	return (
@@ -72,6 +95,9 @@ const Object = (props) => {
 				style={imageStyle}
 				alt="invalid"
 				className={classes.image}
+				onTouchStart={startMoveHandler}
+				onTouchMove={moveHandler}
+				onTouchEnd={endMoveHandler}
 			/>
 		</div>
 	);
