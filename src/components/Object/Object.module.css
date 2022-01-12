@@ -1,10 +1,13 @@
 .object {
 	border: 2px solid white;
 	position: absolute;
-	top: 50px;
-	left: 50px;
 	box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 	transform-origin: -1px -1px; /* -1px for border width */
+}
+
+.object--deselected {
+	border-color: transparent;
+	box-shadow: none;
 }
 
 .origin {
@@ -19,6 +22,10 @@
 	z-index: 1001;
 }
 
+.object--deselected .origin {
+	display: none;
+}
+
 .delete {
 	width: 22px;
 	height: 22px;
@@ -31,6 +38,10 @@
 	justify-content: center;
 	align-items: center;
 	z-index: 1001;
+}
+
+.object--deselected .delete {
+	display: none;
 }
 
 .delete i {
@@ -52,6 +63,10 @@
 	transform: rotate(-45deg);
 	box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 	z-index: 1001;
+}
+
+.object--deselected .modify {
+	display: none;
 }
 
 .modify i {

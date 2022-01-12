@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { canvas } from "../../store/canvas";
 import classes from "./Object.module.css";
@@ -9,6 +9,13 @@ const Object = (props) => {
 	const [isBeingModified, setIsBeingModified] = useState(false);
 	const [isMoving, setIsMoving] = useState(false);
 	const [touchPoint, setTouchPoint] = useState(null);
+	const [isSelected, setIsSelected] = useState(false);
+
+	useEffect(() => {
+		document.body.addEventListener("click", (event) => {
+			setIsSelected(false);
+		});
+	}, []);
 
 	const { id, src, width, height, top, left, rotate } = props.object;
 
@@ -25,7 +32,9 @@ const Object = (props) => {
 	};
 
 	const deleteObjectHandler = () => {
-		dispatch(canvas.actions.delete({ id }));
+		if (isSelected) {
+			dispatch(canvas.actions.delete({ id }));
+		}
 	};
 
 	const startModifyHandler = () => {
@@ -33,8 +42,10 @@ const Object = (props) => {
 	};
 
 	const modifyHandler = (event) => {
-		if (isBeingModified) {
-			const { top: canvasTop, left: canvasLeft } = props.onCanvasRequest();
+		if (isSelected && isBeingModified) {
+			const { top: canvasTop, left: canvasLeft } = props
+				.onGetCanvas()
+				.getBoundingClientRect();
 			const { clientX: left, clientY: top } = event.touches[0];
 
 			const deltaLeft = left - canvasLeft;
@@ -62,7 +73,7 @@ const Object = (props) => {
 	};
 
 	const moveHandler = (event) => {
-		if (isMoving) {
+		if (isSelected && isMoving) {
 			const { clientX: x, clientY: y } = event.touches[0];
 			const deltaX = x - touchPoint.x;
 			const deltaY = y - touchPoint.y;
@@ -76,8 +87,17 @@ const Object = (props) => {
 		setIsMoving(false);
 	};
 
+	const selectHandler = (event) => {
+		event.stopPropagation();
+		setIsSelected(true);
+	};
+
+	const objectClass = `${classes.object} ${
+		!isSelected ? classes["object--deselected"] : ""
+	}`;
+
 	return (
-		<div className={classes.object} style={objectStyle}>
+		<div className={objectClass} style={objectStyle}>
 			<div className={classes["origin"]} />
 			<div className={classes["delete"]} onClick={deleteObjectHandler}>
 				<i className="fas fa-times" />
@@ -98,6 +118,7 @@ const Object = (props) => {
 				onTouchStart={startMoveHandler}
 				onTouchMove={moveHandler}
 				onTouchEnd={endMoveHandler}
+				onClick={selectHandler}
 			/>
 		</div>
 	);

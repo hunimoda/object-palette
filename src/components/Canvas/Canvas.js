@@ -9,8 +9,8 @@ const Canvas = (props) => {
 
 	const canvasRef = useRef();
 
-	const canvasRequestHandler = () => {
-		return canvasRef.current.getBoundingClientRect();
+	const getCanvasHandler = () => {
+		return canvasRef.current;
 	};
 
 	return (
@@ -19,7 +19,7 @@ const Canvas = (props) => {
 				<Object
 					key={object.id}
 					object={object}
-					onCanvasRequest={canvasRequestHandler}
+					onGetCanvas={getCanvasHandler}
 				/>
 			))}
 		</div>
