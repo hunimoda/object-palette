@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 export const canvas = createSlice({
 	name: "canvas",
@@ -12,26 +12,44 @@ export const canvas = createSlice({
 	},
 	reducers: {
 		add: (state, action) => {
-			const { src, aspectRatio } = action.payload;
-
-			const initWidth = 150;
-			const initHeight = initWidth / aspectRatio;
+			const { src, aspectRatio, type } = action.payload;
 
 			const canvasWidth = state.size.width;
 			const canvasHeight = state.size.height;
 
-			const newObject = {
-				src,
-				id: Math.random().toString() + src,
-				aspectRatio,
-				width: initWidth,
-				height: initHeight,
-				top: (canvasHeight - initHeight) / 2,
-				left: (canvasWidth - initWidth) / 2,
-				rotate: 0,
-				isSelected: true,
-				zIndex: ++state.maxZIndex,
-			};
+			let newObject;
+
+			if (type === "image") {
+				const initWidth = 150;
+				const initHeight = initWidth / aspectRatio;
+
+				newObject = {
+					type,
+					src,
+					id: Math.random().toString() + src,
+					aspectRatio,
+					width: initWidth,
+					height: initHeight,
+					top: (canvasHeight - initHeight) / 2,
+					left: (canvasWidth - initWidth) / 2,
+					rotate: 0,
+					isSelected: true,
+					zIndex: ++state.maxZIndex,
+				};
+			} else if (type === "text") {
+				newObject = {
+					type,
+					id: Math.random().toString() + "simple-text",
+					width: 200,
+					height: 60,
+					top: (canvasHeight - 60) / 2,
+					left: (canvasWidth - 200) / 2,
+					rotate: 0,
+					isSelected: true,
+					isTextEditMode: true,
+					zIndex: ++state.maxZIndex,
+				};
+			}
 
 			canvas.caseReducers.deselectAll(state);
 			state.objects.push(newObject);
@@ -46,22 +64,37 @@ export const canvas = createSlice({
 
 			const currentObject = state.objects.find((object) => object.id === id);
 
+			let newWidth;
+			let newHeight;
+			let newRotate;
+
 			const deltaLeft = touchLeft - currentObject.left;
 			const deltaTop = touchTop - currentObject.top;
-			const diagonalLength = Math.sqrt(
-				Math.pow(deltaLeft, 2) + Math.pow(deltaTop, 2)
-			);
 
-			const aspectRatio = currentObject.aspectRatio;
-			const diagonalAngle = (Math.atan(1 / aspectRatio) * 180) / Math.PI;
-			const diagonalRatio = Math.sqrt(Math.pow(aspectRatio, 2) + 1);
+			if (currentObject.type === "image") {
+				const diagonalLength = Math.sqrt(
+					Math.pow(deltaLeft, 2) + Math.pow(deltaTop, 2)
+				);
 
-			currentObject.width = (diagonalLength * aspectRatio) / diagonalRatio;
-			currentObject.height = diagonalLength / diagonalRatio;
-			currentObject.rotate =
-				diagonalAngle +
-				((Math.acos(deltaLeft / diagonalLength) * 180) / Math.PI) *
-					(deltaTop > 0 ? -1 : 1);
+				const aspectRatio = currentObject.aspectRatio;
+				const diagonalAngle = (Math.atan(1 / aspectRatio) * 180) / Math.PI;
+				const diagonalRatio = Math.sqrt(Math.pow(aspectRatio, 2) + 1);
+
+				newWidth = (diagonalLength * aspectRatio) / diagonalRatio;
+				newHeight = diagonalLength / diagonalRatio;
+				newRotate =
+					diagonalAngle +
+					((Math.acos(deltaLeft / diagonalLength) * 180) / Math.PI) *
+						(deltaTop > 0 ? -1 : 1);
+			} else {
+				newWidth = deltaLeft;
+				newHeight = deltaTop;
+				newRotate = 0;
+			}
+
+			currentObject.width = newWidth;
+			currentObject.height = newHeight;
+			currentObject.rotate = newRotate;
 		},
 		move: (state, action) => {
 			const { id, deltaX, deltaY } = action.payload;
@@ -78,10 +111,17 @@ export const canvas = createSlice({
 				canvas.caseReducers.deselectAll(state);
 				object.isSelected = true;
 				object.zIndex = ++state.maxZIndex;
+			} else if (object.type === "text") {
+				object.isTextEditMode = true;
 			}
 		},
 		deselectAll: (state) => {
-			state.objects.forEach((object) => (object.isSelected = false));
+			state.objects.forEach((object) => {
+				object.isSelected = false;
+				if (object.type === "text") {
+					object.isTextEditMode = false;
+				}
+			});
 		},
 	},
 });

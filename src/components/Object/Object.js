@@ -10,8 +10,19 @@ const Object = (props) => {
 	const [isMoving, setIsMoving] = useState(false);
 	const [touchPoint, setTouchPoint] = useState(null);
 
-	const { id, src, width, height, top, left, rotate, isSelected, zIndex } =
-		props.object;
+	const {
+		type,
+		id,
+		src,
+		width,
+		height,
+		top,
+		left,
+		rotate,
+		isSelected,
+		isTextEditMode,
+		zIndex,
+	} = props.object;
 
 	const objectStyle = {
 		width: `${width}px`,
@@ -21,7 +32,7 @@ const Object = (props) => {
 		transform: `rotate(${-rotate}deg)`,
 		zIndex,
 	};
-	const imageStyle = {
+	const contentStyle = {
 		width: `${width}px`,
 		height: `${height}px`,
 	};
@@ -103,18 +114,36 @@ const Object = (props) => {
 				onTouchMove={modifyHandler}
 				onTouchEnd={endModifyHandler}
 			>
-				<i className="fas fa-arrows-alt-h" />
+				{type === "image" ? (
+					<i className={`fas fa-arrows-alt-h ${classes.slanted}`} />
+				) : (
+					<i className="fas fa-arrows-alt" />
+				)}
 			</div>
-			<img
-				src={src}
-				style={imageStyle}
-				alt="invalid"
-				className={classes.image}
-				onTouchStart={startMoveHandler}
-				onTouchMove={moveHandler}
-				onTouchEnd={endMoveHandler}
-				onClick={selectHandler}
-			/>
+			{type === "image" && (
+				<img
+					src={src}
+					style={contentStyle}
+					alt="invalid"
+					onTouchStart={startMoveHandler}
+					onTouchMove={moveHandler}
+					onTouchEnd={endMoveHandler}
+					onClick={selectHandler}
+				/>
+			)}
+			{type === "text" && (
+				<textarea
+					style={contentStyle}
+					className={classes.text}
+					onTouchStart={startMoveHandler}
+					onTouchMove={moveHandler}
+					onTouchEnd={endMoveHandler}
+					onClick={selectHandler}
+					placeholder="ABC"
+					readOnly={!isTextEditMode}
+					autoFocus
+				></textarea>
+			)}
 		</div>
 	);
 };

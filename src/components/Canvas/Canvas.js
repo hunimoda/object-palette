@@ -5,7 +5,7 @@ import classes from "./Canvas.module.css";
 
 const Canvas = (props) => {
 	const canvasClass = `${classes.canvas} ${props.className}`;
-	const objects = useSelector((state) => state.canvas.objects);
+	const canvasObjects = useSelector((state) => state.canvas.objects);
 
 	const canvasRef = useRef();
 
@@ -15,7 +15,7 @@ const Canvas = (props) => {
 
 	return (
 		<div className={canvasClass} ref={canvasRef}>
-			{objects.map((object) => (
+			{canvasObjects.map((object) => (
 				<Object
 					key={object.id}
 					object={object}
