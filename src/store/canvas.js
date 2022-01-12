@@ -71,7 +71,7 @@ export const canvas = createSlice({
 
 			let newWidth;
 			let newHeight;
-			let newRotate;
+			let newRotate = currentObject.rotate;
 
 			const deltaLeft = touchLeft - currentObject.left;
 			const deltaTop = touchTop - currentObject.top;
@@ -94,9 +94,12 @@ export const canvas = createSlice({
 					((Math.acos(deltaLeft / diagonalLength) * 180) / Math.PI) *
 						(deltaTop > 0 ? -1 : 1);
 			} else {
-				newWidth = deltaLeft;
-				newHeight = deltaTop;
-				newRotate = 0;
+				newWidth =
+					deltaLeft * Math.cos((newRotate * Math.PI) / 180) -
+					deltaTop * Math.sin((newRotate * Math.PI) / 180);
+				newHeight =
+					deltaLeft * Math.sin((newRotate * Math.PI) / 180) +
+					deltaTop * Math.cos((newRotate * Math.PI) / 180);
 			}
 
 			currentObject.width = newWidth;
